@@ -1,4 +1,4 @@
-#include "gameManager.h"
+Ôªø#include "gameManager.h"
 #include "card.h"
 #include "role.h"
 #include "player.h"
@@ -8,8 +8,7 @@
 #include <chrono>
 using namespace std;
 
-GameManager::GameManager() {
-}
+GameManager::GameManager() {}
 
 void GameManager::setupGame() {
     string asciiArt =
@@ -23,7 +22,6 @@ void GameManager::setupGame() {
         "By ESCALIBUR GROUP \n\n\n\n\n\n\n";
 
     cout << asciiArt << endl;
-
 
     cout << "Enter the number of players:\n"
         << "4 players: 1 shogun, 1 samurai, 2 ninjas.\n"
@@ -41,7 +39,7 @@ void GameManager::setupGame() {
     }
 
     initializePlayers(this->numberOfPlayers);
-    distributeRoles();
+    distributeRoles(); // Nouvelle m√©thode de distribution al√©atoire des r√¥les
     currentPlayerIndex = 0;
 
     for (int i = 0; i < numberOfPlayers; i++) {
@@ -52,67 +50,31 @@ void GameManager::setupGame() {
     }
 }
 
-
 void GameManager::initializePlayers(int numberOfPlayers) {
     players.clear();
 
     for (int i = 0; i < numberOfPlayers; i++) {
         string playerName = "Player " + to_string(i + 1);
-        Player player(playerName); 
+        Player player(playerName);
         players.push_back(player);
     }
 }
 
-
-
 void GameManager::distributeRoles() {
-
-
-
-    Role* shogun = new Shogun("Shogun", 1);
-    Role* samurai = new Samurai("Samurai", 2);
-    Role* ronin = new Ronin("Ronin", 3);
-    Role* ninja1 = new Ninja("Ninja", 4);
-    Role* ninja2 = new Ninja("Ninja", 5);
-    Role* ninja3 = new Ninja("Ninja", 6);
-    Role* ninja4 = new Ninja("Ninja", 7);
-
-    if (numberOfPlayers == 4) {
-        players[0].setRole(shogun);
-        players[1].setRole(samurai);
-        players[2].setRole(ninja1);
-        players[3].setRole(ninja2);
-    }
-    else if (numberOfPlayers == 5) {
-        players[0].setRole(shogun);
-        players[1].setRole(samurai);
-        players[2].setRole(ronin);
-        players[3].setRole(ninja1);
-        players[4].setRole(ninja2);
-    }
-    else if (numberOfPlayers == 6) {
-        players[0].setRole(shogun);
-        players[1].setRole(samurai);
-        players[2].setRole(ronin);
-        players[3].setRole(ninja1);
-        players[4].setRole(ninja2);
-        players[5].setRole(ninja3);
-    }
-    else if (numberOfPlayers == 7) {
-        players[0].setRole(shogun);
-        players[1].setRole(samurai);
-        players[2].setRole(samurai);
-        players[3].setRole(ronin);
-        players[4].setRole(ninja1);
-        players[5].setRole(ninja2);
-        players[6].setRole(ninja3);
-    }
+    vector<Role*> allRoles = { new Shogun("Shogun", 1), new Samurai("Samurai", 2), new Ronin("Ronin", 3), new Ninja("Ninja", 4) };
 
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    shuffle(allRoles.begin(), allRoles.end(), default_random_engine(seed));
+
+    cout << "Chargement des roles \n\n\n";
+    for (int i = 0; i < numberOfPlayers; ++i) {
+        players[i].setRole(allRoles[i]);
+    }
 }
 
+
 void GameManager::distributeCards() {
-    cards.clear(); 
+    cards.clear();
 
     for (int i = 0; i < numberOfPlayers; i++) {
         Card* attackCard = new AttackCard("nodachi", i + 1, 3, 3);
@@ -128,8 +90,6 @@ void GameManager::distributeCards() {
     shuffle(cards.begin(), cards.end(), default_random_engine(seed));
 }
 
-
-
 void GameManager::startGame() {
     cout << "Game started!" << endl;
     distributeCards();
@@ -141,8 +101,15 @@ void GameManager::startGame() {
             break;
         }
     }
+
     if (shogunIndex != -1) {
         currentPlayerIndex = shogunIndex;
+    }
+    else {
+        shuffle(players.begin(), players.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
+        currentPlayerIndex = 0; 
+        players[currentPlayerIndex].setRole(new Shogun("Shogun", 1));
+
     }
 
     while (true) {
@@ -193,20 +160,16 @@ void GameManager::startGame() {
     }
 }
 
-
-
-
-
 int GameManager::getNumberOfPlayers() const {
     return this->numberOfPlayers;
 }
 
 void GameManager::playNextTurn() {
-    // ImplÈmentez la logique pour le tour suivant
+    // logique des tours
 }
 
 GameManager::~GameManager() {
-    // LibÈrer la mÈmoire des cartes
+    // pour vid√© la memory
     for (Card* card : cards) {
         delete card;
     }

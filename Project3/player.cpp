@@ -1,9 +1,9 @@
 #include "player.h"
 
-Player::Player() : role(nullptr) {
+Player::Player() : role(nullptr), healthPoints(0) {
 }
 
-Player::Player(const std::string& name) : name(name), role(nullptr) {
+Player::Player(const std::string& name) : name(name), role(nullptr), healthPoints(0) {
 }
 
 void Player::setName(const std::string& name) {
@@ -12,6 +12,18 @@ void Player::setName(const std::string& name) {
 
 void Player::setRole(Role* role) {
     this->role = role;
+}
+
+int Player::getHealthPoints() const {
+    return healthPoints;
+}
+
+void Player::setHealthPoints(int hp) {
+    healthPoints = hp;
+}
+
+bool Player::isDefeated() const {
+    return healthPoints <= 0;
 }
 
 std::string Player::getName() const {

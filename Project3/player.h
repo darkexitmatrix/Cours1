@@ -10,10 +10,15 @@ public:
     void setName(const std::string& name);
     void setRole(Role* role);
 
+    int getHealthPoints() const;
+    void setHealthPoints(int hp);
+    bool isDefeated() const;
+
     std::string getName() const;
     Role* getRole() const;
 
 private:
     std::string name;
     Role* role;
+    int healthPoints;
 };
