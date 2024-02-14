@@ -1,19 +1,35 @@
-#pragma once
-#include <string>
-#include "role.h"
+#include "player.h"
 
-class Player {
-public:
-    Player();
-    Player(const std::string& name);
+Player::Player() : role(nullptr), healthPoints(0) {
+}
 
-    void setName(const std::string& name);
-    void setRole(Role* role);
+Player::Player(const std::string& name) : name(name), role(nullptr), healthPoints(0) {
+}
 
-    std::string getName() const;
-    Role* getRole() const;
+void Player::setName(const std::string& name) {
+    this->name = name;
+}
 
-private:
-    std::string name;
-    Role* role;
-};
+void Player::setRole(Role* role) {
+    this->role = role;
+}
+
+int Player::getHealthPoints() const {
+    return healthPoints;
+}
+
+void Player::setHealthPoints(int hp) {
+    healthPoints = hp;
+}
+
+bool Player::isDefeated() const {
+    return healthPoints <= 0;
+}
+
+std::string Player::getName() const {
+    return name;
+}
+
+Role* Player::getRole() const {
+    return role;
+}
