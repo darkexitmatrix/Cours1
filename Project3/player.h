@@ -16,8 +16,16 @@ public:
     void setPlayerHealth(int hp);
     bool isPlayerDefeated() const;
 
+<<<<<<< HEAD
     std::string getPlayerName() const;
     Character* getPlayerCharacter() const;
+=======
+    int getHealthPoints() const;
+    void setHealthPoints(int hp);
+    bool isDefeated() const;
+
+    std::string getName() const;
+>>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
     Role* getRole() const;
 private:
     std::string name;
