@@ -39,16 +39,19 @@ void GameManager::setupGame() {
     }
 
     initializePlayers(this->numberOfPlayers);
-    distributeRoles(); // Nouvelle méthode de distribution aléatoire des rôles
+    distributeRoles(); 
+    distributeCharacters();
     currentPlayerIndex = 0;
 
     for (int i = 0; i < numberOfPlayers; i++) {
         string playerName;
         cout << "Enter the name of Player " << i + 1 << ": ";
         cin >> playerName;
-        players[i].setName(playerName);
+        players[i].setPlayerName(playerName);
     }
+
 }
+
 
 void GameManager::initializePlayers(int numberOfPlayers) {
     players.clear();
@@ -59,19 +62,32 @@ void GameManager::initializePlayers(int numberOfPlayers) {
         players.push_back(player);
     }
 }
-
 void GameManager::distributeRoles() {
     vector<Role*> allRoles = { new Shogun("Shogun", 1), new Samurai("Samurai", 2), new Ronin("Ronin", 3), new Ninja("Ninja", 4) };
 
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(allRoles.begin(), allRoles.end(), default_random_engine(seed));
 
-    cout << "Chargement des roles \n\n\n";
+    cout << "loading roles \n\n\n";
     for (int i = 0; i < numberOfPlayers; ++i) {
         players[i].setRole(allRoles[i]);
     }
 }
+void GameManager::distributeCharacters() {
+    std::vector<Character*> allCharacters = { new Benkei(), new Chiyome(), new Ginchiyo(), new Goemon(), new Hanzo(), new Hideyoshi(), new Ieyasu(), new Kojiro(), new Musashi(), new Nobunaga(), new Tomoe(), new Ushiwaka() };
 
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(allCharacters.begin(), allCharacters.end(), std::default_random_engine(seed));
+
+    std::cout << "Distribution character :\n";
+    for (size_t i = 0; i < players.size(); ++i) {
+        if (!allCharacters.empty()) {
+            players[i].setPlayerCharacter(allCharacters.front()); 
+            std::cout << "Player " << i + 1 << " : " << allCharacters.front()->getCharacterName() << std::endl;
+            allCharacters.erase(allCharacters.begin()); 
+        }
+    }
+}
 
 void GameManager::distributeCards() {
     cards.clear();
@@ -89,6 +105,22 @@ void GameManager::distributeCards() {
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(cards.begin(), cards.end(), default_random_engine(seed));
 }
+
+void GameManager::displayHealthPoints() const {
+    cout << "Health Points:" << endl;
+    for (const Player& player : players) {
+        cout << player.getPlayerName() << ": ";
+        if (player.getRole() != nullptr && player.getPlayerCharacter() != nullptr) {
+            cout << player.getPlayerHealth() << " HP (Character: " << player.getPlayerCharacter()->getCharacterName() << ")" << endl;
+        }
+        else {
+            cout << "Unknown (No Role or Character assigned)" << endl;
+        }
+    }
+    cout << endl;
+}
+
+
 
 void GameManager::startGame() {
     cout << "Game started!" << endl;
@@ -113,13 +145,14 @@ void GameManager::startGame() {
     }
 
     while (true) {
-        Player& currentPlayer = players[currentPlayerIndex];
-        cout << "It's " << currentPlayer.getName() << "'s turn." << endl;
-        int choice;
 
+        Player& currentPlayer = players[currentPlayerIndex];
+        cout << "It's " << currentPlayer.getPlayerName() << "'s turn." << endl;
+        int choice;
+        displayHealthPoints();
         cout << "[1] Play card" << endl;
         cout << "[2] Pass" << endl;
-        cout << "[3] View my role" << endl;
+        cout << "[3] View my role & character" << endl;
         cin >> choice;
 
         while (choice != 1 && choice != 2 && choice != 3) {
@@ -146,13 +179,16 @@ void GameManager::startGame() {
         }
         else if (choice == 3) {
             Role* playerRole = currentPlayer.getRole();
-            if (playerRole != nullptr) {
+            Character* playerCharacter = currentPlayer.getPlayerCharacter();
+            if (playerRole != nullptr && playerCharacter != nullptr) {
                 cout << "Your role is: " << playerRole->getName() << endl;
+                cout << "Your character is: " << playerCharacter->getCharacterName() << endl;
             }
             else {
-                cout << "ERROR 0x0001 no roles, please restart the game" << endl;
+                cout << "ERROR 0x0001 no role or character, please restart the game" << endl;
             }
         }
+
 
         if (choice != 3) {
             currentPlayerIndex = (currentPlayerIndex + 1) % numberOfPlayers;

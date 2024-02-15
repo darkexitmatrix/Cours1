@@ -12,6 +12,7 @@ public:
     void setupGame();
     void startGame();
     int getNumberOfPlayers() const;
+    void displayHealthPoints() const;
     void playNextTurn();
 
 private:
@@ -21,7 +22,10 @@ private:
     int currentPlayerIndex;
     void initializePlayers(int numberOfPlayers);
     void distributeRoles();
+    void distributeCharacters();
     void distributeCards();
+
+    
     
 };
 
