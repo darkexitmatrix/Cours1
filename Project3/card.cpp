@@ -1,4 +1,4 @@
-﻿#include "Card.h"
+#include "Card.h"
 #include <iostream>
 
 Card::Card(const string& name, int number)
