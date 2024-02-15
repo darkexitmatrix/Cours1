@@ -1,4 +1,4 @@
-﻿#include "gameManager.h"
+#include "gameManager.h"
 #include "card.h"
 #include "role.h"
 #include "player.h"
@@ -39,11 +39,8 @@ void GameManager::setupGame() {
     }
 
     initializePlayers(this->numberOfPlayers);
-    distributeRoles(); 
-<<<<<<< HEAD
+    distributeRoles();
     distributeCharacters();
-=======
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
     currentPlayerIndex = 0;
 
     for (int i = 0; i < numberOfPlayers; i++) {
@@ -64,22 +61,19 @@ void GameManager::initializePlayers(int numberOfPlayers) {
         players.push_back(player);
     }
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 void GameManager::distributeRoles() {
     vector<Role*> allRoles = { new Shogun("Shogun", 1), new Samurai("Samurai", 2), new Ronin("Ronin", 3), new Ninja("Ninja", 4) };
 
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(allRoles.begin(), allRoles.end(), default_random_engine(seed));
 
-<<<<<<< HEAD
-    cout << "loading roles \n\n\n";
+    cout << "Chargement des roles \n\n\n";
     for (int i = 0; i < numberOfPlayers; ++i) {
         players[i].setRole(allRoles[i]);
     }
 }
+
 void GameManager::distributeCharacters() {
     std::vector<Character*> allCharacters = { new Benkei(), new Chiyome(), new Ginchiyo(), new Goemon(), new Hanzo(), new Hideyoshi(), new Ieyasu(), new Kojiro(), new Musashi(), new Nobunaga(), new Tomoe(), new Ushiwaka() };
 
@@ -89,17 +83,11 @@ void GameManager::distributeCharacters() {
     std::cout << "Distribution character :\n";
     for (size_t i = 0; i < players.size(); ++i) {
         if (!allCharacters.empty()) {
-            players[i].setPlayerCharacter(allCharacters.front()); 
+            players[i].setPlayerCharacter(allCharacters.front());
             std::cout << "Player " << i + 1 << " : " << allCharacters.front()->getCharacterName() << std::endl;
-            allCharacters.erase(allCharacters.begin()); 
+            allCharacters.erase(allCharacters.begin());
         }
     }
-=======
-    cout << "Chargement des roles \n\n\n";
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        players[i].setRole(allRoles[i]);
-    }
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 }
 
 
@@ -120,7 +108,7 @@ void GameManager::distributeCards() {
     shuffle(cards.begin(), cards.end(), default_random_engine(seed));
 }
 
-<<<<<<< HEAD
+
 void GameManager::displayHealthPoints() const {
     cout << "Health Points:" << endl;
     for (const Player& player : players) {
@@ -136,9 +124,6 @@ void GameManager::displayHealthPoints() const {
 }
 
 
-
-=======
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 void GameManager::startGame() {
     cout << "Game started!" << endl;
     distributeCards();
@@ -156,7 +141,7 @@ void GameManager::startGame() {
     }
     else {
         shuffle(players.begin(), players.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
-        currentPlayerIndex = 0; 
+        currentPlayerIndex = 0;
         players[currentPlayerIndex].setRole(new Shogun("Shogun", 1));
 
     }
