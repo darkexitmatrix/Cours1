@@ -1,4 +1,4 @@
-﻿#include "gameManager.h"
+#include "gameManager.h"
 #include "card.h"
 #include "role.h"
 #include "player.h"
