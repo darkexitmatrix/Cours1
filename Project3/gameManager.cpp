@@ -39,11 +39,8 @@ void GameManager::setupGame() {
     }
 
     initializePlayers(this->numberOfPlayers);
-    distributeRoles(); 
-<<<<<<< HEAD
+    distributeRoles();
     distributeCharacters();
-=======
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
     currentPlayerIndex = 0;
 
     for (int i = 0; i < numberOfPlayers; i++) {
@@ -64,22 +61,19 @@ void GameManager::initializePlayers(int numberOfPlayers) {
         players.push_back(player);
     }
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 void GameManager::distributeRoles() {
     vector<Role*> allRoles = { new Shogun("Shogun", 1), new Samurai("Samurai", 2), new Ronin("Ronin", 3), new Ninja("Ninja", 4) };
 
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(allRoles.begin(), allRoles.end(), default_random_engine(seed));
 
-<<<<<<< HEAD
-    cout << "loading roles \n\n\n";
+    cout << "Chargement des roles \n\n\n";
     for (int i = 0; i < numberOfPlayers; ++i) {
         players[i].setRole(allRoles[i]);
     }
 }
+
 void GameManager::distributeCharacters() {
     std::vector<Character*> allCharacters = { new Benkei(), new Chiyome(), new Ginchiyo(), new Goemon(), new Hanzo(), new Hideyoshi(), new Ieyasu(), new Kojiro(), new Musashi(), new Nobunaga(), new Tomoe(), new Ushiwaka() };
 
@@ -89,38 +83,74 @@ void GameManager::distributeCharacters() {
     std::cout << "Distribution character :\n";
     for (size_t i = 0; i < players.size(); ++i) {
         if (!allCharacters.empty()) {
-            players[i].setPlayerCharacter(allCharacters.front()); 
+            players[i].setPlayerCharacter(allCharacters.front());
             std::cout << "Player " << i + 1 << " : " << allCharacters.front()->getCharacterName() << std::endl;
-            allCharacters.erase(allCharacters.begin()); 
+            allCharacters.erase(allCharacters.begin());
         }
     }
-=======
-    cout << "Chargement des roles \n\n\n";
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        players[i].setRole(allRoles[i]);
-    }
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 }
 
 
 void GameManager::distributeCards() {
     cards.clear();
 
-    for (int i = 0; i < numberOfPlayers; i++) {
-        Card* attackCard = new AttackCard("nodachi", i + 1, 3, 3);
-        Card* actionCard = new ActionCard("action", i + 1, "effect");
-        Card* permanentCard = new PermanentCard("permanent", i + 1, "description");
+    int numActionCards[] = { 4, 4, 4, 6, 3, 15, 4, 3 }; 
+    string actionCardNames[] = { "cri_de_guerre", "daimyo", "diversion", "geisha", "meditation", "parade", "ceremonie_du_the", "jujitsu" };
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < numActionCards[i]; ++j) {
+            cards.push_back(new ActionCard(actionCardNames[i], j + 1, "effect"));
+        }
+    }
 
-        cards.push_back(attackCard);
-        cards.push_back(actionCard);
-        cards.push_back(permanentCard);
+    string weaponNames[] = { "nodachi", "nagayari", "tanegashima", "daikyu", "katana", "kanabo", "wakizashi", "naginata", "bo", "kusarigama", "shuriken", "bokken", "kiseru" };
+    int numWeaponCards[] = { 1, 1, 1, 1, 1, 1, 1, 2, 5, 4, 3, 6, 5 };
+    int weaponDamages[] = { 3, 2, 1, 3, 3, 2, 3, 1, 1, 2, 1, 1, 2 };
+    int weaponRanges[] = { 3, 4, 5, 5, 2, 3, 1, 4, 2, 2, 2, 1, 1 };
+    for (int i = 0; i < 13; ++i) {
+        for (int j = 0; j < numWeaponCards[i]; ++j) {
+            cards.push_back(new AttackCard(weaponNames[i], j + 1, weaponDamages[i], weaponRanges[i]));
+        }
+    }
+
+    string permanentCardNames[] = { "attaque_rapide", "code_du_bushido", "armure", "concentration" };
+    int numPermanentCards[] = { 3, 2, 4, 6 };
+    string permanentCardDescriptions[] = { "", "", "", "" };
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < numPermanentCards[i]; ++j) {
+            cards.push_back(new PermanentCard(permanentCardNames[i], j + 1, permanentCardDescriptions[i]));
+        }
     }
 
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(cards.begin(), cards.end(), default_random_engine(seed));
+
+    int shogunCards = 4;
+    int secondAndThirdPlayersCards = 5;
+    int fourthAndFifthPlayersCards = numberOfPlayers >= 5 ? 6 : 0;
+    int sixthAndSeventhPlayersCards = numberOfPlayers >= 7 ? 7 : 0;
+
+    vector<int> cardsToDistribute;
+    cardsToDistribute.push_back(shogunCards);
+    cardsToDistribute.push_back(secondAndThirdPlayersCards);
+    cardsToDistribute.push_back(secondAndThirdPlayersCards);
+    cardsToDistribute.push_back(fourthAndFifthPlayersCards);
+    cardsToDistribute.push_back(fourthAndFifthPlayersCards);
+    cardsToDistribute.push_back(sixthAndSeventhPlayersCards);
+    cardsToDistribute.push_back(sixthAndSeventhPlayersCards);
+
+    int currentPlayerIndex = 0;
+    for (int i = 0; i < cardsToDistribute.size(); ++i) {
+        for (int j = 0; j < cardsToDistribute[i]; ++j) {
+            if (currentPlayerIndex < numberOfPlayers) {
+                players[currentPlayerIndex].addCard(cards.front());
+                cards.erase(cards.begin());
+                currentPlayerIndex = (currentPlayerIndex + 1) % numberOfPlayers;
+            }
+        }
+    }
 }
 
-<<<<<<< HEAD
+
 void GameManager::displayHealthPoints() const {
     cout << "Health Points:" << endl;
     for (const Player& player : players) {
@@ -136,9 +166,6 @@ void GameManager::displayHealthPoints() const {
 }
 
 
-
-=======
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
 void GameManager::startGame() {
     cout << "Game started!" << endl;
     distributeCards();
@@ -156,7 +183,7 @@ void GameManager::startGame() {
     }
     else {
         shuffle(players.begin(), players.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
-        currentPlayerIndex = 0; 
+        currentPlayerIndex = 0;
         players[currentPlayerIndex].setRole(new Shogun("Shogun", 1));
 
     }

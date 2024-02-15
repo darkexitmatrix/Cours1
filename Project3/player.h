@@ -1,8 +1,10 @@
-// player.h
 #pragma once
+
 #include <string>
+#include <vector>
 #include "character.h"
 #include "role.h"
+#include "card.h"
 
 class Player {
 public:
@@ -12,25 +14,24 @@ public:
     void setPlayerName(const std::string& name);
     void setPlayerCharacter(Character* character);
     void setRole(Role* role);
-    int getPlayerHealth() const;
-    void setPlayerHealth(int hp);
-    bool isPlayerDefeated() const;
+    void addCard(Card* card);
 
-<<<<<<< HEAD
+    int getPlayerHealth() const;
+    bool isPlayerDefeated() const;
     std::string getPlayerName() const;
     Character* getPlayerCharacter() const;
-=======
-    int getHealthPoints() const;
-    void setHealthPoints(int hp);
-    bool isDefeated() const;
-
-    std::string getName() const;
->>>>>>> 1ca5599a4e6e1ae52d94a8f163e67fe4dc027e8f
     Role* getRole() const;
+
+    void removeCard(Card* card);
+    std::vector<Card*>& getCards();
+
+    Card* getPlayerCard(int index) const;
+    void setPlayerCard(int index, Card* card);
+    void deletePlayerCard(int index);
+
 private:
     std::string name;
     Character* character;
     Role* role;
-    int healthPoints;
+    std::vector<Card*> cards;
 };
-

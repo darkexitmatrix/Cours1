@@ -1,56 +1,45 @@
 #pragma once
 
 #include <string>
-using namespace std;
 
 class Card {
 public:
-    Card(const string& name, int number);
-
-    string getName() const;
-    int getNumber() const;
-
     virtual void display() const = 0;
-
-private:
-    string name;
-    int number;
+    virtual ~Card() {}
 };
 
 class AttackCard : public Card {
 public:
-    AttackCard(const string& name, int number, int damage, int range);
-
+    AttackCard(const std::string& name, int damage, int range);
     void display() const override;
 
-    int getDamage() const;
-    int getRange() const;
-
 private:
+    std::string name;
     int damage;
     int range;
 };
 
 class ActionCard : public Card {
 public:
-    ActionCard(const string& name, int number, const string& effect);
-
+    ActionCard(const std::string& name, const std::string& effect);
     void display() const override;
 
-    string getEffect() const;
-
 private:
-    string effect;
+    std::string name;
+    std::string effect;
 };
 
 class PermanentCard : public Card {
 public:
-    PermanentCard(const string& name, int number, const string& description);
-
+    PermanentCard(const std::string& name, const std::string& description);
     void display() const override;
 
-    string getDescription() const;
-
 private:
-    string description;
+    std::string name;
+    std::string description;
 };
+
+
+
+
+
