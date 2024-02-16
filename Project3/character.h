@@ -1,15 +1,13 @@
-// Character.h
 #pragma once
 #include <string>
 
 class Character {
 public:
     Character(const std::string& name, int health, const std::string& ability);
-
     std::string getCharacterName() const;
     int getCharacterHealth() const;
     std::string getCharacterAbility() const;
-
+    
 private:
     std::string name;
     int healthPoints;

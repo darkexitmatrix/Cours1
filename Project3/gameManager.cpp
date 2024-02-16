@@ -49,7 +49,6 @@ void GameManager::setupGame() {
         cin >> playerName;
         players[i].setPlayerName(playerName);
     }
-
 }
 
 void GameManager::initializePlayers(int numberOfPlayers) {
@@ -70,7 +69,7 @@ void GameManager::distributeRoles() {
 
     cout << "Chargement des roles \n\n\n";
     for (int i = 0; i < numberOfPlayers; ++i) {
-        players[i].setRole(allRoles[i]);
+        players[i].setPlayerRole(allRoles[i]);
     }
 }
 
@@ -90,15 +89,14 @@ void GameManager::distributeCharacters() {
     }
 }
 
-
 void GameManager::distributeCards() {
     cards.clear();
 
-    int numActionCards[] = { 4, 4, 4, 6, 3, 15, 4, 3 }; 
+    int numActionCards[] = { 4, 4, 4, 6, 3, 15, 4, 3 };
     string actionCardNames[] = { "cri_de_guerre", "daimyo", "diversion", "geisha", "meditation", "parade", "ceremonie_du_the", "jujitsu" };
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numActionCards[i]; ++j) {
-            cards.push_back(new ActionCard(actionCardNames[i], j + 1, "effect"));
+            cards.push_back(new ActionCard(actionCardNames[i], "effect"));
         }
     }
 
@@ -108,7 +106,7 @@ void GameManager::distributeCards() {
     int weaponRanges[] = { 3, 4, 5, 5, 2, 3, 1, 4, 2, 2, 2, 1, 1 };
     for (int i = 0; i < 13; ++i) {
         for (int j = 0; j < numWeaponCards[i]; ++j) {
-            cards.push_back(new AttackCard(weaponNames[i], j + 1, weaponDamages[i], weaponRanges[i]));
+            cards.push_back(new AttackCard(weaponNames[i], weaponDamages[i], weaponRanges[i]));
         }
     }
 
@@ -117,7 +115,7 @@ void GameManager::distributeCards() {
     string permanentCardDescriptions[] = { "", "", "", "" };
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < numPermanentCards[i]; ++j) {
-            cards.push_back(new PermanentCard(permanentCardNames[i], j + 1, permanentCardDescriptions[i]));
+            cards.push_back(new PermanentCard(permanentCardNames[i], permanentCardDescriptions[i]));
         }
     }
 
@@ -150,12 +148,11 @@ void GameManager::distributeCards() {
     }
 }
 
-
 void GameManager::displayHealthPoints() const {
-    cout << "Health Points:" << endl;
+    cout << "\nHealth Points:" << endl;
     for (const Player& player : players) {
         cout << player.getPlayerName() << ": ";
-        if (player.getRole() != nullptr && player.getPlayerCharacter() != nullptr) {
+        if (player.getPlayerRole() != nullptr && player.getPlayerCharacter() != nullptr) {
             cout << player.getPlayerHealth() << " HP (Character: " << player.getPlayerCharacter()->getCharacterName() << ")" << endl;
         }
         else {
@@ -165,14 +162,13 @@ void GameManager::displayHealthPoints() const {
     cout << endl;
 }
 
-
 void GameManager::startGame() {
-    cout << "Game started!" << endl;
+    system("cls");
     distributeCards();
     int shogunIndex = -1;
 
     for (int i = 0; i < players.size(); i++) {
-        if (players[i].getRole() != nullptr && players[i].getRole()->getName() == "Shogun") {
+        if (players[i].getPlayerRole() != nullptr && players[i].getPlayerRole()->getName() == "Shogun") {
             shogunIndex = i;
             break;
         }
@@ -184,14 +180,12 @@ void GameManager::startGame() {
     else {
         shuffle(players.begin(), players.end(), default_random_engine(chrono::system_clock::now().time_since_epoch().count()));
         currentPlayerIndex = 0;
-        players[currentPlayerIndex].setRole(new Shogun("Shogun", 1));
-
+        players[currentPlayerIndex].setPlayerRole(new Shogun("Shogun", 1));
     }
 
     while (true) {
-
         Player& currentPlayer = players[currentPlayerIndex];
-        cout << "It's " << currentPlayer.getPlayerName() << "'s turn." << endl;
+        cout << "\nIt's " << currentPlayer.getPlayerName() << "'s turn." << endl;
         int choice;
         displayHealthPoints();
         cout << "[1] Play card" << endl;
@@ -201,28 +195,55 @@ void GameManager::startGame() {
 
         while (choice != 1 && choice != 2 && choice != 3) {
             cout << "Invalid choice. Please enter 1, 2, or 3: ";
-            cin.clear();
+            system("clear");
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cin >> choice;
         }
 
         if (choice == 1) {
+            system("cls");
+            cout << "Player's Cards:\n";
+            cout << "------------------------------------------------------------\n";
+            cout << "  Card Number  |  Card Type       |  Card Value            \n";
+            cout << "------------------------------------------------------------\n";
+
+            // Retrieve the player's cards
+            vector<Card*> playerCards = currentPlayer.getCards();
+            // Display each card's details in a table format
+            for (int i = 1; i < playerCards.size(); ++i) {
+                cout << "      " << i << "       |     " << playerCards[i]->getType();
+
+                // Display additional details based on card type
+                if (playerCards[i]->getType() == "Attack") {
+                    cout << "        |  Damage: " << dynamic_cast<Card*>(playerCards[i])->getValue();
+                }
+                else if (playerCards[i]->getType() == "Action") {
+                    cout << "        |  Effect: " << dynamic_cast<Card*>(playerCards[i])->getValue();
+                }
+                else if (playerCards[i]->getType() == "Permanent") {
+                    cout << "     |  Description: " << dynamic_cast<Card*>(playerCards[i])->getValue();
+                }
+
+                cout << "\n";
+            }
+
+            cout << "--------------------------------------------------\n";
+
+            cout << "Enter the number of the card you want to display: ";
             int cardNumber;
             cin >> cardNumber;
 
-            if (cardNumber >= 0 && cardNumber < cards.size()) {
-                cards[cardNumber]->display();
-                cout << "Enter the number of the card: ";
+            // Check if the card number is valid
+            if (cardNumber >= 0 && cardNumber < playerCards.size()) {
+                playerCards[cardNumber]->display();
             }
             else {
-                cout << "Card number invalid" << endl;
+                cout << "Invalid card number. Please try again.\n";
             }
         }
-        else if (choice == 2) {
-            cout << "You have passed your turn" << endl;
-        }
         else if (choice == 3) {
-            Role* playerRole = currentPlayer.getRole();
+            system("cls");
+            Role* playerRole = currentPlayer.getPlayerRole();
             Character* playerCharacter = currentPlayer.getPlayerCharacter();
             if (playerRole != nullptr && playerCharacter != nullptr) {
                 cout << "Your role is: " << playerRole->getName() << endl;
@@ -232,7 +253,6 @@ void GameManager::startGame() {
                 cout << "ERROR 0x0001 no role or character, please restart the game" << endl;
             }
         }
-
 
         if (choice != 3) {
             currentPlayerIndex = (currentPlayerIndex + 1) % numberOfPlayers;
@@ -245,11 +265,11 @@ int GameManager::getNumberOfPlayers() const {
 }
 
 void GameManager::playNextTurn() {
-    // logique des tours
+    // Implement logic for playing the next turn
 }
 
 GameManager::~GameManager() {
-    // pour vidé la memory
+    // Clean up memory used by cards
     for (Card* card : cards) {
         delete card;
     }

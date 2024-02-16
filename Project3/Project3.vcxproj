@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AttackLogic.cpp" />
     <ClCompile Include="card.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="game.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="role.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttackLogic.h" />
     <ClInclude Include="card.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameManager.h" />

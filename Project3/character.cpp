@@ -1,4 +1,5 @@
 #include "Character.h"
+#include <iostream> 
 
 Character::Character(const std::string& name, int health, const std::string& ability)
     : name(name), healthPoints(health), ability(ability) {}
@@ -10,6 +11,7 @@ std::string Character::getCharacterName() const {
 int Character::getCharacterHealth() const {
     return healthPoints;
 }
+
 
 std::string Character::getCharacterAbility() const {
     return ability;

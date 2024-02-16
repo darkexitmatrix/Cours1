@@ -1,4 +1,5 @@
 #include "player.h"
+#include <algorithm>
 
 Player::Player() : character(nullptr), role(nullptr) {}
 
@@ -12,17 +13,12 @@ void Player::setPlayerCharacter(Character* character) {
     this->character = character;
 }
 
-void Player::setRole(Role* role) {
+void Player::setPlayerRole(Role* role) {
     this->role = role;
 }
 
 int Player::getPlayerHealth() const {
-    if (character != nullptr) {
-        return character->getCharacterHealth();
-    }
-    else {
-        return 0;
-    }
+    return (character != nullptr) ? character->getCharacterHealth() : 0;
 }
 
 bool Player::isPlayerDefeated() const {
@@ -37,12 +33,12 @@ Character* Player::getPlayerCharacter() const {
     return character;
 }
 
-Role* Player::getRole() const {
+Role* Player::getPlayerRole() const {
     return role;
 }
 
 void Player::addCard(Card* card) {
-    cards.push_back(card);
+    cards.emplace_back(card);
 }
 
 void Player::removeCard(Card* card) {
@@ -52,17 +48,12 @@ void Player::removeCard(Card* card) {
     }
 }
 
-std::vector<Card*>& Player::getCards() {
+const std::vector<Card*>& Player::getCards() const {
     return cards;
 }
 
 Card* Player::getPlayerCard(int index) const {
-    if (index >= 0 && index < cards.size()) {
-        return cards[index];
-    }
-    else {
-        return nullptr;
-    }
+    return (index >= 0 && index < cards.size()) ? cards[index] : nullptr;
 }
 
 void Player::setPlayerCard(int index, Card* card) {
@@ -77,3 +68,12 @@ void Player::deletePlayerCard(int index) {
         cards.erase(cards.begin() + index);
     }
 }
+
+int Player::getNumberOfCards() const {
+    return cards.size();
+}
+/*void Player::removeHealth(int healthToRemove) { // Implémentation de la fonction removeHealth
+    if (character != nullptr) {
+        character->removeHealth(healthToRemove);
+    }
+}*/
